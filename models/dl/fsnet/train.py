@@ -108,11 +108,11 @@ def _predict_test(sess, model, num, class_num):
             real[real_app].append(real_app)
             pred[real_app].append(predx)
             if real_app not in feature_set:
-               feature_set[real_app] =[]
+                feature_set[real_app] = []
             feature_set[real_app].append(feature)
     import pickle
-    with open('feature_set_FSNET.pkl','wb') as fp:
-        pickle.dump(feature_set, fp)    
+    with open('feature_set_FSNET.pkl', 'wb') as fp:
+        pickle.dump(feature_set, fp)
     return real, pred
 
 
@@ -139,6 +139,7 @@ def predict(config):
         eval.save_res(res, os.path.join(config.pred_dir, 'FSNet.json'))
         print(json.dumps(res, indent=1, sort_keys=True))
 
+
 def get_logit(config):
     test_dataset = get_dataset_from_generator(config.test_json, config, config.max_flow_length_test)
     test_dataset = test_dataset.make_one_shot_iterator()
@@ -149,7 +150,7 @@ def get_logit(config):
 
     sess_config = tf.ConfigProto(allow_soft_placement=True)
     sess_config.gpu_options.allow_growth = True
-    feature=[]
+    feature = []
     with tf.Session(config=sess_config) as sess:
         sess.run(tf.global_variables_initializer())
         saver = tf.train.Saver(tf.trainable_variables())
@@ -158,7 +159,7 @@ def get_logit(config):
         sess.run(rnn_classify.train_false)
         num = test_num // config.batch_size + 1
         print(rnn_classify.flow)
-        flow=sess.run(rnn_classify.flow)
+        flow = sess.run(rnn_classify.flow)
         print(len(flow))
         return
         for _ in tqdm(range(num), ascii=True, desc='Predict'):
@@ -167,44 +168,51 @@ def get_logit(config):
             feature.append(_feature)
     return feature
 
-inititial= False
+
+inititial = False
 rnn_classify = None
-sess_config=None
+sess_config = None
 sess = None
 from dataset import START_KEY, PAD_KEY, END_KEY
 import tensorflow as tf
-def get_generator(config,flow):
+
+
+def get_generator(config, flow):
     def gen():
         numx = 0
         total_num = len(flow)
         while True:
-            yield ('0-0',0,flow[numx])
+            yield ('0-0', 0, flow[numx])
             numx = (numx + 1) % total_num
+
     return gen
+
+
 def get_logit_online(config, flow):
-    global  inititial,rnn_classify,sess,sess_config
-    #id: label-index
-    #label: 标签
-    #flow: 包长序列
+    global inititial, rnn_classify, sess, sess_config
+    # id: label-index
+    # label: 标签
+    # flow: 包长序列
     for i in range(len(flow)):
         if len(flow[i]) <= config.max_packet_length:
-            flow[i] = [START_KEY] + flow[i] + [END_KEY] + [PAD_KEY] * (config.max_packet_length-len(flow[i]))
-            flow[i] = flow[i][:config.max_packet_length+2]
+            flow[i] = [START_KEY] + flow[i] + [END_KEY] + [PAD_KEY] * (config.max_packet_length - len(flow[i]))
+            flow[i] = flow[i][:config.max_packet_length + 2]
     if inititial == False:
         nums = len(flow)
-        test_dataset = tf.data.Dataset.from_generator(get_generator(config,flow),
-                (tf.string, tf.int32, tf.int32),
-            (tf.TensorShape([]), tf.TensorShape([]), tf.TensorShape([config.max_packet_length + 2]))
-        ).batch(nums)
+        test_dataset = tf.data.Dataset.from_generator(get_generator(config, flow),
+                                                      (tf.string, tf.int32, tf.int32),
+                                                      (tf.TensorShape([]), tf.TensorShape([]),
+                                                       tf.TensorShape([config.max_packet_length + 2]))
+                                                      ).batch(nums)
         test_dataset = test_dataset.make_one_shot_iterator()
         rnn_classify = model.FSNet(config, test_dataset, trainable=False)
         sess_config = tf.ConfigProto(allow_soft_placement=True)
         sess_config.gpu_options.allow_growth = True
         sess = tf.Session(config=sess_config)
-        inititial=True
+        inititial = True
         sess.run(tf.global_variables_initializer())
         saver = tf.train.Saver(tf.trainable_variables())
         saver.restore(sess, tf.train.latest_checkpoint(config.test_model_dir))
     sess.run(rnn_classify.train_false)
-    feature= sess.run(rnn_classify.logit,feed_dict={"reshape/strided_slice:0": flow})
+    feature = sess.run(rnn_classify.logit, feed_dict={"reshape/strided_slice:0": flow})
     return feature

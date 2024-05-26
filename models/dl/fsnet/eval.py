@@ -2,6 +2,7 @@ from tqdm import tqdm
 import numpy as np
 import json
 from sklearn.metrics import classification_report
+
 ALL_ = -1
 TPR_KEY = 'TPR'
 FPR_KEY = 'FPR'
@@ -47,7 +48,7 @@ def _evaluate_fpr_and_tpr(real, pred):
         FPR[app_ind] = FP_app / (FP_app + TN_app)
     TPR[ALL_] = TP / (TP + FN)
     FPR[ALL_] = FP / (FP + TN)
-    #print("Total Accuracy:",(TP+TN)/(TP+TN+FP+FN))
+    # print("Total Accuracy:",(TP+TN)/(TP+TN+FP+FN))
     return TPR, FPR
 
 
@@ -69,18 +70,18 @@ def save_res(res, filename):
 
 
 def evaluate(real, pred):
-    print('real.shape:{0},len.shape{1}'.format(np.array(real).shape,np.array(pred).shape))
-    r=0
-    t=0
-    y_real =[]
-    y_pred =[]
+    print('real.shape:{0},len.shape{1}'.format(np.array(real).shape, np.array(pred).shape))
+    r = 0
+    t = 0
+    y_real = []
+    y_pred = []
     for i in range(len(real)):
-       for j in range(len(real[i])):
+        for j in range(len(real[i])):
             y_real.append(real[i][j])
             y_pred.append(pred[i][j])
-            if real[i][j]==pred[i][j]:
-               r+=1
-            t+=1
+            if real[i][j] == pred[i][j]:
+                r += 1
+            t += 1
 
     example_len = [len(ix) for ix in real]
     TPR, FPR = _evaluate_fpr_and_tpr(real, pred)
@@ -90,7 +91,7 @@ def evaluate(real, pred):
         FPR_KEY: FPR,
         FTF_KEY: FTF
     }
-    print('Accuracy:',r*1.0/t)
-    print(classification_report(y_true=y_real,y_pred=y_pred, digits=5))
+    print('Accuracy:', r * 1.0 / t)
+    print(classification_report(y_true=y_real, y_pred=y_pred, digits=5))
 
     return res
