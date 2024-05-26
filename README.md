@@ -1,83 +1,76 @@
 # traffic_classification_utils
-## Introduction
-This project organizes and summarizes the common methods in encrypted traffic classification, and provides the execution entry of each method. When using it, you only need to preprocess your own data as required, put it in a specified directory, and then run the entry main function of the corresponding model. This project is particularly helpful for researchers to conduct comparative experiments. Now that one of my papers has been accepted, so I open the source this project and share it with everyone!
+## 项目介绍
+本项目将加密流量分类里面常见方法做了统一的整理归纳，提供各个方法的执行入口。使用的时候只需要按照要求把自己的数据预处理一下，放在指定的一个目录然后再去运行相应的模型的入口main函数即可。本项目对科研人员做对比试验特别有帮助，现在我将它分享给大家！希望对你们的科研有帮助。
 
-Currently this project only integrates related models based on packet length sequences, ** payload-based models are not discussed**!
-
-## URL
+## 项目地址
 https://github.com/jmhIcoding/traffic_classification_utils
-## Project Highlights
-### Embedded multiple models for encrypted traffic classification
-Currently this project supports the following models:
-
-#### deep learning based models
+## 项目亮点
+### 内嵌多种模型
+目前本项目支持如下模型：
+#### 神经网络模型
 - FS-Net
 Liu, C., He, L., Xiong, G., Cao, Z., & Li, Z. (2019, April). Fs-net: A flow sequence network for encrypted traffic classification. In IEEE INFOCOM 2019-IEEE Conference On Computer Communications (pp. 1171-1179). IEEE.
-
 - GraphDapp
 Shen, M., Zhang, J., Zhu, L., Xu, K., & Du, X. (2021). Accurate decentralized application identification via encrypted traffic analysis using graph neural networks. IEEE Transactions on Information Forensics and Security, 16, 2367-2380.
-
 - Deep Fingerprinting 
 Sirinam, P., Imani, M., Juarez, M., & Wright, M. (2018, October). Deep fingerprinting: Undermining website fingerprinting defenses with deep learning. In Proceedings of the 2018 ACM SIGSAC Conference on Computer and Communications Security (pp. 1928-1943).
-
 - SDAE/LSTM/CNN 
 Rimmer, V., Preuveneers, D., Juarez, M., Van Goethem, T., & Joosen, W. Automated Website Fingerprinting through Deep Learning.
-
 - Beauty
 Schuster, R., Shmatikov, V., & Tromer, E. (2017). Beauty and the burst: Remote identification of encrypted video streams. In 26th USENIX Security Symposium (USENIX Security 17) (pp. 1357-1374).
+- AppNet
+Wang, X., Chen, S., & Su, J. (2020, July). App-net: A hybrid neural network for encrypted mobile traffic classification. In IEEE INFOCOM 2020-IEEE Conference on Computer Communications Workshops (INFOCOM WKSHPS) (pp. 424-429). IEEE.
+- MIMETIC
+Aceto, G., Ciuonzo, D., Montieri, A., & Pescapè, A. (2019). MIMETIC: Mobile encrypted traffic classification using multimodal deep learning. Computer networks, 165, 106944.
 
+**一般经验来看，FS-Net在各个任务都是表现最好的。**
 
-#### statistical achine learning based models
+#### 统计机器学习模型
 
 - CUMUL
 Panchenko, A., Lanze, F., Pennekamp, J., Engel, T., Zinnen, A., Henze, M., & Wehrle, K. (2016, February). Website Fingerprinting at Internet Scale. In NDSS.
-
 - AppScanner
 Taylor, V. F., Spolaor, R., Conti, M., & Martinovic, I. (2016, March). Appscanner: Automatic fingerprinting of smartphone apps from encrypted network traffic. In 2016 IEEE European Symposium on Security and Privacy (EuroS&P) (pp. 439-454). IEEE.
-
 - BIND
 Al-Naami, K., Chandra, S., Mustafa, A., Khan, L., Lin, Z., Hamlen, K., & Thuraisingham, B. (2016, December). Adaptive encrypted traffic fingerprinting with bi-directional dependence. In Proceedings of the 32nd Annual Conference on Computer Security Applications (pp. 177-188).
-
 - RDP
 Jiang, M., Gou, G., Shi, J., & Xiong, G. (2019, October). I know what you are doing with remote desktop. In 2019 IEEE 38th International Performance Computing and Communications Conference (IPCCC) (pp. 1-7). IEEE.
 
+**一般来说，不同任务下，CUMUL和BIND效果最好！**
 
-
-# Guide for use
-In order to minimize our workload using existing methods, for a new encrypted traffic analysis task, we need to do two things:
+# 使用说明
+为了最大限度减少我们使用现有方法的工作量，对于一个新的加密流量分析任务，我们需要做两件事情：
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/ff4d88e003af4a54a4f8e85226690e9b.png)
 
- 1. 
- Convert the dataset in your hand into a unified json format folder, which is the dataset directory shown in the above figure. You can save your own dataset to this directory after conversion. This conversion is particularly simple, just follow the convention. Whether it is raw pcap file traffic, log files, etc., it can be easily converted.
- 2. 
- Jump to the corresponding model directory, which is the models directory in the above picture, modify the dataset field in xxx_main.py, and use run.sh to execute the corresponding xxx_main.py.
+ 1. 将你手上的数据集转换成一个统一的json格式的文件夹，也就是上面图里面显示得dataset目录，你们把自己的数据集转换后保存到这个目录即可。这个转换特别的简单，只要按照约定即可。手上不管是原始pcap文件流量，还是日志文件等等，都可以很方便加以转换。
+ 2. 跳转到相应的模型目录下就是上面图片里面models目录，修改xxx_main.py里面的数据集字段，使用run.sh去执行相应的xxx_main.py即可。
 
-**Why do you need to convert the data in advance? Why is there no one-click scripting? **
+**为什么需要把数据预先转换一下尼？为什么没有一键脚本。**
 
-A: Because the data formats that everyone gets are all kinds of strange, there are pcap, there are logs, and each person's own data organization form is also different, so I can't write a unified data conversion script to unify everyone's situation. Therefore, I leave the task of this data conversion to the users themselves, because only the data holders know the format of their data best, and I just agree on the target format after conversion.
+答：因为每个人手上拿到的数据格式千奇百怪，有pcap的，有日志的，而且每个人自己的数据组织形式也有差异，因此我写不出来统一的数据转换脚本去统一所有人的情况。因此我把这个数据转换的任务交给使用者自己，因为只有数据持有者才最清楚自己的数据是什么形式的，我只是约定好转换后的目标格式。
 
-**Why use the run.sh script to execute xxx_main.py?**
-At present, you need to use run.sh, which contains some processes for loading the environment directory.
+**为什么要使用run.sh脚本去执行xxx_main.py尼？**
+目前是需要使用run.sh的，里面有一些载入环境目录的过程。
 
+**为什么不使用统一的模型入口？**
+的确可以写个带parser的main入口，留待下一步吧。
 
-## Data preparation
-Because all sequence models are considered in this project, it is only necessary to prepare information such as the packet length sequence and packet direction sequence of the data stream.
+【做完这两步以后，就可以直接使用各个模型执行加密流量分类任务！】
 
-Data path: `dataset/{dataset name}/{category name}.json`
+## 数据准备
+因为本项目考虑的都是序列模型，因此只需要准备好数据流的包长序列、包方向序列等信息即可。
 
-## Description of dataset name
-In the dataset directory, each subdirectory is a dataset of a task, and each task is distinguished by a folder. For example, there are currently two different datasets: app60, app320.
+数据路径：`dataset/{数据集名称}/{类别名}.json`
+
+## 数据集名称说明
+dataset目录下，每个子目录都是一个任务的数据集，各个任务通过文件夹区分。比如目前有两个不同的数据集：app60，app320。
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/c9e64cb27ed041b59e3d90c99efa3fbb.png)
+如果你要加入一个新的数据集，那么就新建一个文件夹，给这个数据集取一个自己喜欢的名字即可。
 
-If you want to add a new dataset, create a new folder and give the dataset a name you like.
-
-### Category name description
-Enter the specified data set, and the traffic samples of each category are uniformly placed in the same json file. Therefore, there are m different jsons in this directory, then m classification will be performed, and the file name of json is the ground-truth label of the traffic sample in it.
-
+### 类别名说明
+进入指定的数据集，每个类别的流量样本都统一放在一个相同的json文件内。因此这个目录下有m个不同的json，那么就会执行m分类，json的文件名也就是里面流量样本的ground-truth标签。
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/0b3f8431d3e34492a8aa68490729e601.png)
-
-The format of the traffic samples within each json file is as follows:
-
+每个json文件内流量样本的格式如下：
 ```bash
 [
 {//第一个样本
@@ -90,13 +83,11 @@ The format of the traffic samples within each json file is as follows:
 },
 ]
 ```
-There are two main points to note:
-1. A json file contains a large list, and each element in the list corresponds to a network flow. If there are n elements in the list, it means that there are n traffic samples in this class.
+主要的注意的有两点：
+1. json是一个大的list，list里面每个元素对应了一条网络流。如果list里面有n个元素，那么就表示这个类别下有n条流量样本。
+2. 每条流量都是一个dict, 里面有一个关键的字段：**packet_length**，包长序列。如果还需要使用BIND模型的话，**arrive_time_delta**字段也必不可少。其中包长序列是带正负号的，正负号表示数据包的方向。正号表示这个包是Client发给Server的，负号表示Sever发给Client的。之所以保留正负号是因为有的模型是需要这个信息的。对于AppNet模型和MIMETIC模型来说，还需要添加payload载荷信息。
 
-2. Each traffic is a dict with a key field: **packet_length**, the packet length sequence. If you also need to use the BIND model, the **arrive_time_delta** field is also essential. The packet length sequence is signed, and the sign indicates the direction of the data packet. A positive sign indicates that the package is sent by the Client to the Server, and a negative sign indicates that the Sever sends it to the Client. The sign is reserved because some models require this information.
-
-Example: The json below contains two samples.
-
+例子：下面的json包含了两个样本。
 ```bash
 [
   {
@@ -156,9 +147,9 @@ Example: The json below contains two samples.
 ]
 ```
 
-## run the model
-Currently I have all the models in separate folders under the models directory.
-The directory is as follows. If you need any model, `cd` to the corresponding directory.
+## 运行模型
+目前我把所有的模型都分别放在models目录下的不同文件夹内。
+目录如下， 需要什么模型，cd到相应的目录下即可。
 ```bash
 .
 ├─models
@@ -179,11 +170,10 @@ The directory is as follows. If you need any model, `cd` to the corresponding di
 │  │  ├─cumul
 │  │  ├─rdp
 ```
-In the directory of each model, there is an entry script of xxx_main_model.py, and a data directory. For example, the directory structure under the appscanner model:
-
+在每个模型的目录下，都有一个xxx_main_model.py的入口脚本，和一个data目录。例如appscanner模型下的目录结构：
 ```bash
 appscanner
-│  appscanner_main_model.py  ###an entry script
+│  appscanner_main_model.py  ###模型的入口
 │  eval.py
 │  feature_extractor.py
 │  hyper_params.py
@@ -194,9 +184,9 @@ appscanner
 │  __init__.py
 │  【1】AppScanner.pdf
 │
-├─data				##history models and datas
+├─data				##训练好的历史模型
 │  │  appscanner_app60_model
-│  ├─appscanner_app60  ##the training-set, testing-set
+│  ├─appscanner_app60  ##已经划分好的训练集、测试集、验证集等
 │  │      X_test.pkl
 │  │      X_train.pkl
 │  │      X_valid.pkl
@@ -205,21 +195,33 @@ appscanner
 │  │      y_valid.pkl
 │  │
 ```
-
-`appscanner_main_model.py` is the entry of the appscanner model, you only need to modify the last few lines in it:
+`appscanner_main_model.py`是appscanner模型的入口，大家只需要修改里面的最后几行就可以：
 
 ```python
 if __name__ == '__main__':
-   appscanner = model('app60') ##Specify the dataset name required by the task. The dataset directory of the project needs to have this dataset directory.
-   #appscanner.parser_raw_data()  ##Re-parse the raw traffic samples in the dataset directory and re-convert to the specific data format required by the model.
-   appscanner.train()  ###Train the model
-   appscanner.test()   ###Test the model
+   appscanner = model('app60') ##指定任务所需的数据集名，项目的dataset目录需要有这个数据集目录。
+   #appscanner.parser_raw_data()  ##重新解析dataset目录下的原始流量样本，重新转换为模型所需的特定数据格式。
+   appscanner.train()  ###训练模型
+   appscanner.test()   ###测试模型
 ```
-For each model class, when instantiating, you need to specify what dataset is used. During initialization, the system will automatically detect whether the data set has been processed in history (mainly to check whether there are corresponding test sets, training sets and model files in the data directory), if not, the original data will be formatted in one step Transform, divide test set, training set.
+对于每个模型的class,在实例化的时候，需要指定所使用的数据集是什么。在初始化的时候，系统会自动检测历史是否处理过这个数据集（主要是去查看data目录下是否有相应的测试集、训练集和模型文件存在），如果没有处理过会把原始数据做一步格式转换，划分测试集、训练集。
 
-This process is done by calling parser_raw_data()! parser_raw_data() will re-shuffle the data as soon as it is executed, which is generally used for cross-validation!
+这个过程是通过调用parser_raw_data()完成的！parser_raw_data() 一执行就会重新打乱数据，一般用于交叉验证的时候！
 
-Then use the run.sh script to execute this `appscanner_main_model.py`, and run.sh is at the root of the entire project.
+然后使用run.sh脚本执行这个`appscanner_main_model.py`就可以了，run.sh在整个项目的根。
 ```bash
 ./../../../run.sh appscanner_main_model.py
 ```
+
+# 其他
+我的研究方向是加密网络流量分析，欢迎交流。
+我的邮件地址是：13237672625@163.com，jiangminghao@iie.ac.cn
+
+# 常见问题
+1. 准备json数据的时候，包长序列是否需要填充？
+
+- 答： 不需要，各个方法里面内置了数据填充逻辑。
+
+2. 需要什么运行环境？
+
+- 答： 对于统计方法，sklearn, lightgbm，对于DF和FSNet 安装 tensorflow 1.15左右的版本，对于GraphDApp 安装pytorch和DGL 0.4.3
