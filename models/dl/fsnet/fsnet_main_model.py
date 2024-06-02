@@ -1,5 +1,9 @@
 __author__ = 'dk'
 
+import sys
+from os import path
+sys.path.append(path.abspath('.'))
+
 from models.model_base import abs_model
 from config import raw_dataset_base, min_flow_len
 from models.dl import select_gpu
@@ -51,7 +55,7 @@ class model(abs_model):
         flags.DEFINE_string('test_json', test_record, 'the processed test json file')
         flags.DEFINE_string('train_meta', train_meta, 'the processed train number')
         flags.DEFINE_string('test_meta', test_meta, 'the processed test number')
-        flags.DEFINE_string('log_dir', log_dir, 'where to save the log')
+        # flags.DEFINE_string('log_dir', log_dir, 'where to save the log')
         flags.DEFINE_string('model_dir', log_dir, 'where to save the model')
         flags.DEFINE_string('data_dir', data_dir, 'where to read data')
         flags.DEFINE_integer('class_num', self.num_classes(), 'the class number')
@@ -73,7 +77,7 @@ class model(abs_model):
 
         flags.DEFINE_float('keep_prob', 0.8, 'the keep probability for dropout')
         flags.DEFINE_float('learning_rate', 0.001, 'learning rate')
-        flags.DEFINE_integer('iter_num', int(1e4), 'iteration number')
+        flags.DEFINE_integer('iter_num', int(8e4), 'iteration number')
         flags.DEFINE_integer('eval_batch', 77, 'evaluated train batches')
         flags.DEFINE_integer('train_eval_batch', 77, 'evaluated train batches')
         flags.DEFINE_string('decay_step', 'auto', 'the decay step')
@@ -175,14 +179,10 @@ class model(abs_model):
 
 
 if __name__ == '__main__':
-    for test_rate in [0.6]:
-        print(test_rate)
-        dataset = 'twitter100'
-        fsnet_model = model(dataset, randseed=128, splitrate=test_rate, max_len=200)
-        # fsnet_model.parser_raw_data()
-        fsnet_model.train()
-        fsnet_model.test()
-        print(test_rate)
-        print(dataset)
-        del fsnet_model
-        break
+    test_rate = 0.2
+    dataset = 'fsnet'
+    fsnet_model = model(dataset, randseed=128, splitrate=test_rate, max_len=200)
+    # fsnet_model.parser_raw_data()
+    fsnet_model.train()
+    # fsnet_model.test()
+    del fsnet_model
